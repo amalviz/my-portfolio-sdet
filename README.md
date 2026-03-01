@@ -51,12 +51,14 @@ In the repo: **Settings → Secrets and variables → Actions**.
 
 **Variables (recommended):**
 
-| Variable     | Description                    | Example    |
-|-------------|---------------------------------|------------|
-| `S3_BUCKET` | Name of the S3 bucket           | `my-portfolio` |
-| `AWS_REGION`| AWS region of the bucket (optional) | `eu-west-2`   |
+| Variable     | Description                                         | Example             |
+|-------------|------------------------------------------------------|---------------------|
+| `S3_BUCKET` | Name of the S3 bucket                                | `my-portfolio-av`   |
+| `S3_PREFIX` | Folder path in the bucket (optional; leave empty for root) | *(empty for root)*  |
+| `AWS_REGION`| AWS region of the bucket (optional)                 | `eu-north-1`        |
 
-The workflow uses `vars.S3_BUCKET` and `vars.AWS_REGION` (default `eu-west-2` if not set).
+- **Root URL** (e.g. `https://my-portfolio-av.s3.eu-north-1.amazonaws.com/index.html`): set only `S3_BUCKET`, leave `S3_PREFIX` empty or unset.
+- **Subfolder**: set `S3_PREFIX` (e.g. `my-portfolio-files`). Default region is `eu-north-1`.
 
 ### 3. IAM permissions
 
@@ -75,6 +77,60 @@ on the target bucket (and prefix, if you use one).
 - **Actions → Build and Deploy to S3 → Run workflow**
 
 After a successful run, the latest build is in your S3 bucket.
+
+### 5. Fix "Access Denied" when opening the site
+
+If you see an XML `<Code>AccessDenied</Code>` when opening your portfolio URL, the bucket is not allowing public read.
+
+**A. Allow public access on the bucket**
+
+1. In **AWS Console → S3 → your bucket (my-portfolio-av)**:
+2. **Permissions** tab → **Block public access (bucket settings)** → **Edit** → uncheck **Block all public access** → Save (confirm).
+3. **Permissions** tab → **Bucket policy** → **Edit** → paste a policy that allows public `GetObject`. For **bucket root** (URL like `...amazonaws.com/index.html`):
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadPortfolio",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::my-portfolio-av/*"
+    }
+  ]
+}
+```
+
+Replace `my-portfolio-av` if your bucket name differs. For a subfolder use `arn:aws:s3:::my-portfolio-av/my-portfolio-files/*`. Save the policy.
+
+**B. If "Access Denied" happens during GitHub Actions deploy**
+
+Then the IAM user (whose keys are in GitHub secrets) needs S3 permissions. Attach a policy like this to that user (or their group):
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-portfolio-av",
+        "arn:aws:s3:::my-portfolio-av/*"
+      ]
+    }
+  ]
+}
+```
+
+See also `docs/s3-bucket-policy-example.json` for the public-read policy.
 
 ## Project structure
 
