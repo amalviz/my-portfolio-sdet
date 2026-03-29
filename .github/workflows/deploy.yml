@@ -1,4 +1,4 @@
-name: Build and Deploy to S3
+name: Build and Deploy to EC2
 
 on:
   push:
@@ -12,41 +12,12 @@ env:
   S3_BUCKET: my-portfolio-av
 
 jobs:
-  build-and-deploy:
+  build-and-deploy-to-ec2:
     runs-on: ubuntu-latest
+    environment: prod 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Validate AWS and S3 config
-        run: |
-          if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ]; then
-            echo "::error::AWS_ACCESS_KEY_ID secret is not set. Add it in Settings → Secrets and variables → Actions."
-            exit 1
-          fi
-          if [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
-            echo "::error::AWS_SECRET_ACCESS_KEY secret is not set. Add it in Settings → Secrets and variables → Actions."
-            exit 1
-          fi
-          BUCKET="${{ vars.S3_BUCKET || env.S3_BUCKET }}"
-          REGION="${{ vars.AWS_REGION || env.AWS_REGION }}"
-          if [ -z "$BUCKET" ]; then
-            echo "::error::S3_BUCKET is not set. Add repo variable S3_BUCKET or set it in this workflow."
-            exit 1
-          fi
-          echo "Deploying to bucket: $BUCKET (region: $REGION)"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -55,19 +26,51 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION || env.AWS_REGION }}
 
-      # Deploys to bucket root: https://my-portfolio-av.s3.eu-north-1.amazonaws.com/index.html
-      - name: Sync to S3
-        env:
-          S3_BUCKET: ${{ vars.S3_BUCKET || env.S3_BUCKET }}
-          S3_PREFIX: ${{ vars.S3_PREFIX }}
-          AWS_REGION: ${{ vars.AWS_REGION || env.AWS_REGION }}
+      - name: Log in to Amazon ECR
+        id: login-ecr
         run: |
-          if [ -n "$S3_PREFIX" ]; then
-            S3_PATH="s3://${S3_BUCKET}/${S3_PREFIX}/"
-          else
-            S3_PATH="s3://${S3_BUCKET}/"
-          fi
-          echo "Syncing dist/ to $S3_PATH"
-          aws s3 sync dist/ "$S3_PATH" --delete --cache-control "public, max-age=31536000" --exclude "index.html"
-          aws s3 cp dist/index.html "${S3_PATH}index.html" --cache-control "no-cache, no-store, must-revalidate"
-          echo "Deploy complete. Site: https://${S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/index.html"
+          aws ecr get-login-password --region ${{ vars.AWS_REGION || env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
+
+      - name: Build and Push Docker Image to ECR
+        env:
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: latest
+        run: |
+          echo "Building Docker image..."
+          docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+          echo "Tagging Docker image..."
+          docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REPOSITORY:$IMAGE_TAG
+          echo "Pushing Docker image to ECR..."
+          docker push $ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Deploy to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_KEY: ${{ secrets.EC2_KEY }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: latest
+        run: |
+          # Create a temporary key file from the EC2_KEY secret
+          echo "${EC2_KEY}" > /tmp/ec2_key.pem
+          chmod 600 /tmp/ec2_key.pem
+
+          # Install Docker and AWS CLI on the EC2 instance
+          echo "Installing Docker and AWS CLI on EC2 instance..."
+          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem "${EC2_USER}@${EC2_HOST}" "sudo yum update -y && sudo yum install -y docker aws-cli && sudo service docker start && sudo usermod -aG docker ${EC2_USER}"
+
+          # Pass AWS credentials to the EC2 instance
+          echo "Passing AWS credentials to EC2 instance..."
+          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem "${EC2_USER}@${EC2_HOST}" "export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} && export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} && export AWS_REGION=${AWS_REGION} && aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPOSITORY"
+
+          # Pull the latest Docker image on the EC2 instance
+          echo "Pulling the latest Docker image on EC2 instance..."
+          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem "${EC2_USER}@${EC2_HOST}" "docker pull $ECR_REPOSITORY:$IMAGE_TAG"
+
+          # Stop and remove the old container
+          echo "Stopping and removing the old container..."
+          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem "${EC2_USER}@${EC2_HOST}" "docker stop my-portfolio || true && docker rm my-portfolio || true"
+
+          # Run the new container
+          echo "Running the new container..."
+          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem "${EC2_USER}@${EC2_HOST}" "docker run -d -p 80:80 --name my-portfolio $ECR_REPOSITORY:$IMAGE_TAG"
