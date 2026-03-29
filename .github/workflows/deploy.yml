@@ -55,9 +55,9 @@ jobs:
           echo "${EC2_KEY}" > /tmp/ec2_key.pem
           chmod 600 /tmp/ec2_key.pem
 
-          # Install Docker and AWS CLI on the EC2 instance (Ubuntu: apt, not yum)
+          # Install Docker + AWS CLI v2 on EC2 (awscli apt pkg often missing on minimal Ubuntu)
           echo "Installing Docker and AWS CLI on EC2 instance..."
-          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem "${EC2_USER}@${EC2_HOST}" "sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker.io awscli && sudo systemctl enable --now docker && sudo usermod -aG docker ${EC2_USER}"
+          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem "${EC2_USER}@${EC2_HOST}" "sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker.io curl unzip && sudo systemctl enable --now docker && sudo usermod -aG docker ${EC2_USER} && ARCH=\$(uname -m) && case \"\$ARCH\" in x86_64) U=https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip;; aarch64) U=https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip;; *) echo \"Unsupported architecture: \$ARCH\" >&2; exit 1;; esac && curl -fsSL \"\$U\" -o /tmp/awscliv2.zip && unzip -oq /tmp/awscliv2.zip -d /tmp && (command -v aws >/dev/null 2>&1 && sudo /tmp/aws/install --update || sudo /tmp/aws/install) && rm -rf /tmp/aws /tmp/awscliv2.zip"
 
           # Pass AWS credentials to the EC2 instance
           echo "Passing AWS credentials to EC2 instance..."
