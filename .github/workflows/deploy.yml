@@ -55,9 +55,9 @@ jobs:
           echo "${EC2_KEY}" > /tmp/ec2_key.pem
           chmod 600 /tmp/ec2_key.pem
 
-          # Install Docker and AWS CLI on the EC2 instance
+          # Install Docker and AWS CLI on the EC2 instance (Ubuntu: apt, not yum)
           echo "Installing Docker and AWS CLI on EC2 instance..."
-          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem "${EC2_USER}@${EC2_HOST}" "sudo yum update -y && sudo yum install -y docker aws-cli && sudo service docker start && sudo usermod -aG docker ${EC2_USER}"
+          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem "${EC2_USER}@${EC2_HOST}" "sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker.io awscli && sudo systemctl enable --now docker && sudo usermod -aG docker ${EC2_USER}"
 
           # Pass AWS credentials to the EC2 instance
           echo "Passing AWS credentials to EC2 instance..."
