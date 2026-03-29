@@ -20,12 +20,9 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Email</h3>
-                  <a
-                    href="mailto:amal.viswanath@hotmail.com"
-                    className="text-slate-400 hover:text-teal-400 transition-colors"
-                  >
-                    amal.viswanath@hotmail.com
-                  </a>
+                  <p className="text-slate-400">
+                    amal.••••••••@hotmail.com
+                  </p>
                 </div>
               </div>
             </div>
@@ -37,12 +34,9 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Phone</h3>
-                  <a
-                    href="tel:+447776588579"
-                    className="text-slate-400 hover:text-teal-400 transition-colors"
-                  >
-                    +44 7776588579
-                  </a>
+                  <p className="text-slate-400">
+                    +44 ••••••8579
+                  </p>
                 </div>
               </div>
             </div>

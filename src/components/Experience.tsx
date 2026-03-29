@@ -17,64 +17,63 @@ export default function Experience() {
       current: true
     },
     {
-      company: 'HCL Technologies / Dell EMC',
+      company: 'HCL Technologies',
       location: 'Bangalore, India',
       role: 'Test Automation Architect',
       period: 'Sep 2020 - Sep 2023',
+      client: 'Dell EMC',
       achievements: [
         'Defined automation strategy for enterprise storage products; built UI and API automation aligned to SDLC and release cadence',
         'Integrated regression suites into CI pipelines to accelerate feedback cycles and improve release confidence',
-        'Mentored QA engineers and partnered with stakeholders on test planning, coverage and continuous improvement',
-        'Led quality initiatives across multiple product lines, ensuring robust test coverage and automation adoption'
+        'Mentored QA engineers and partnered with stakeholders on test planning, coverage and continuous improvement'
       ],
       current: false
     },
     {
       company: 'VMware',
       location: 'Bangalore, India',
-      role: 'Senior Member of Technical Staff',
+      role: 'Senior Member of Technical Staff (QA)',
       period: 'Aug 2015 - Sep 2020',
       achievements: [
         'Implemented a BDD-based automation framework (Cucumber, SpecFlow) and supported integration testing across an enterprise mobility platform',
         'Developed mobile automation using Appium and delivered stable C# Selenium UI automation with reusable utilities',
-        'CI execution via Jenkins, driving continuous testing practices',
-        'Collaborated with cross-functional teams to enhance test coverage and quality metrics'
+        'CI execution via Jenkins, driving continuous testing practices'
       ],
       current: false
     },
     {
       company: 'Verifone',
       location: 'Bangalore, India',
-      role: 'Automation Engineer',
-      period: '2014 - 2015',
+      role: 'Automation Test Lead',
+      period: 'May 2014 - Aug 2015',
       achievements: [
-        'Built automation frameworks for fintech payment systems',
-        'Validated payment gateway integrations and security compliance',
-        'Delivered quality solutions for enterprise payment platforms'
+        'Automated UI and API test scenarios for payment processing systems using Selenium WebDriver and REST Assured',
+        'Built reusable test frameworks in Java with TestNG, reducing regression cycles by 40%',
+        'Collaborated with development and business teams to ensure quality across fintech products'
       ],
       current: false
     },
     {
       company: 'Ericsson',
       location: 'Bangalore, India',
-      role: 'QA Engineer',
-      period: '2013 - 2014',
+      role: 'Senior Test Engineer',
+      period: 'Jul 2013 - May 2014',
       achievements: [
-        'Performed functional and integration testing for telecom systems',
-        'Developed automated test scripts to improve testing efficiency',
-        'Collaborated with development teams on defect resolution and quality improvements'
+        'Executed functional, integration, and regression testing for telecom OSS/BSS applications',
+        'Automated key workflows using Selenium and TestNG, improving test coverage and execution speed',
+        'Worked closely with cross-functional teams to deliver high-quality telecom solutions'
       ],
       current: false
     },
     {
       company: 'Telcocell',
       location: 'Bangalore, India',
-      role: 'QA Engineer',
-      period: '2011 - 2013',
+      role: 'Test Engineer',
+      period: 'Apr 2011 - Jul 2013',
       achievements: [
-        'Executed manual and automated testing for telecom applications',
-        'Created test plans and test cases based on requirements',
-        'Participated in defect tracking and resolution processes'
+        'Performed manual and automated testing for telecom billing and provisioning systems',
+        'Created and maintained comprehensive test cases and test plans aligned to functional requirements',
+        'Implemented automation scripts using Selenium WebDriver and managed defect tracking in JIRA'
       ],
       current: false
     }
@@ -102,7 +101,7 @@ export default function Experience() {
               >
                 <div className="absolute left-5 top-6 w-6 h-6 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full border-4 border-slate-950 hidden md:block" />
 
-                <div className="glass-effect p-6 md:p-8 rounded-2xl hover:bg-white/10 transition-all duration-300 group">
+                <div className="glass-effect p-6 md:p-8 rounded-2xl hover:bg-white/10 transition-all duration-300 group min-h-fit">
                   {exp.current && (
                     <div className="inline-block px-3 py-1 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 border border-teal-500/50 rounded-full text-sm text-teal-400 mb-4">
                       Current Position
@@ -117,6 +116,9 @@ export default function Experience() {
                       <div className="flex items-center gap-2 text-teal-400 font-semibold mb-2">
                         <Briefcase className="w-4 h-4" />
                         <span>{exp.company}</span>
+                        {exp.client && (
+                          <span className="text-slate-400 text-sm">({exp.client})</span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -132,14 +134,14 @@ export default function Experience() {
                     </div>
                   </div>
 
-                  <ul className="space-y-2">
+                  <ul className="space-y-3">
                     {exp.achievements.map((achievement, achIndex) => (
                       <li
                         key={achIndex}
-                        className="flex gap-3 text-slate-300"
+                        className="flex gap-3 text-slate-300 leading-relaxed"
                       >
                         <span className="text-teal-400 mt-1.5 flex-shrink-0">•</span>
-                        <span>{achievement}</span>
+                        <span className="flex-1 break-words">{achievement}</span>
                       </li>
                     ))}
                   </ul>

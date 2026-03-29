@@ -18,13 +18,13 @@ export default function About() {
           <div className="glass-effect p-6 rounded-2xl hover:bg-white/10 transition-all duration-300 group">
             <Phone className="w-8 h-8 text-teal-400 mb-4 group-hover:scale-110 transition-transform" />
             <h3 className="text-lg font-semibold mb-2">Phone</h3>
-            <p className="text-slate-400">+44 7776588579</p>
+            <p className="text-slate-400">+44 ••••••8579</p>
           </div>
 
           <div className="glass-effect p-6 rounded-2xl hover:bg-white/10 transition-all duration-300 group">
             <Mail className="w-8 h-8 text-teal-400 mb-4 group-hover:scale-110 transition-transform" />
             <h3 className="text-lg font-semibold mb-2">Email</h3>
-            <p className="text-slate-400">amal.viswanath@hotmail.com</p>
+            <p className="text-slate-400">amal.••••••••@hotmail.com</p>
           </div>
         </div>
 

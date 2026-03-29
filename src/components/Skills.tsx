@@ -1,41 +1,41 @@
-import { Code2, Database, GitBranch, TestTube, Gauge, Target } from 'lucide-react';
+import { Code2, Database, Cloud, TestTube, GitBranch, Gauge, Shield, Target } from 'lucide-react';
 
 export default function Skills() {
   const skillCategories = [
     {
       title: 'Test Automation',
       icon: TestTube,
-      skills: ['Playwright', 'Selenium WebDriver', 'REST Assured', 'Cucumber BDD', 'Appium', 'TestNG', 'NUnit'],
+      skills: ['Playwright', 'Selenium WebDriver', 'REST Assured', 'Cucumber BDD', 'SpecFlow', 'Appium', 'TestNG', 'NUnit'],
       color: 'from-teal-500 to-cyan-500'
     },
     {
       title: 'CI/CD & Delivery',
       icon: GitBranch,
-      skills: ['Azure DevOps', 'AWS', 'Jenkins', 'Git', 'Continuous Testing', 'Shift-Left'],
+      skills: ['Azure DevOps', 'AWS', 'Jenkins', 'Git', 'Continuous Testing', 'Shift-Left', 'Release Management'],
       color: 'from-cyan-500 to-blue-500'
     },
     {
       title: 'Programming',
       icon: Code2,
-      skills: ['Java', 'C#', 'TypeScript', 'Python', 'SQL'],
+      skills: ['Java', 'C#', 'TypeScript', 'Python', 'SQL', 'PowerShell'],
       color: 'from-blue-500 to-teal-500'
     },
     {
       title: 'Databases',
       icon: Database,
-      skills: ['Oracle', 'MySQL', 'PostgreSQL'],
+      skills: ['Oracle', 'MySQL', 'PostgreSQL', 'SQL Server'],
       color: 'from-teal-500 to-emerald-500'
     },
     {
       title: 'Quality Engineering',
       icon: Target,
-      skills: ['Risk-Based Testing', 'API/Microservices', 'Integration Testing', 'Defect Triage', 'RCA', 'KPI Reporting'],
+      skills: ['Risk-Based Testing', 'API Testing', 'Microservices', 'Integration Testing', 'Defect Triage', 'RCA', 'Test Strategy'],
       color: 'from-emerald-500 to-teal-500'
     },
     {
       title: 'Performance & Security',
       icon: Gauge,
-      skills: ['JMeter', 'K6', 'WCAG 2.2 Accessibility', 'Security Coordination'],
+      skills: ['JMeter', 'K6', 'WCAG 2.2 Accessibility', 'Security Testing', 'Load Testing'],
       color: 'from-cyan-500 to-teal-500'
     }
   ];
