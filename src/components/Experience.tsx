@@ -80,50 +80,53 @@ export default function Experience() {
   ];
 
   return (
-    <section id="experience" className="py-20 px-4">
+    <section id="experience" className="py-32 px-4">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center">
-          <span className="gradient-text">Professional Experience</span>
-        </h2>
-        <p className="text-slate-400 text-center mb-12 max-w-2xl mx-auto">
-          13+ years of delivering quality across enterprise platforms
-        </p>
+        <div className="text-center mb-16">
+          <h2 className="text-5xl md:text-6xl font-bold mb-4 tracking-tight">
+            <span className="gradient-text">Experience</span>
+          </h2>
+          <p className="text-neutral-500 text-lg">
+            13+ years of delivering quality across enterprise platforms
+          </p>
+        </div>
 
         <div className="relative">
-          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-teal-500 via-cyan-500 to-transparent hidden md:block" />
+          <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-blue-500/50 via-cyan-500/30 to-transparent hidden md:block" />
 
           <div className="space-y-8">
             {experiences.map((exp, index) => (
               <div
                 key={index}
-                className="relative md:pl-20"
+                className="relative md:pl-20 animate-slide-in"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="absolute left-5 top-6 w-6 h-6 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full border-4 border-slate-950 hidden md:block" />
+                <div className="absolute left-6 top-8 w-5 h-5 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-full border-4 border-neutral-950 hidden md:block shadow-lg shadow-blue-500/50" />
 
-                <div className="glass-effect p-6 md:p-8 rounded-2xl hover:bg-white/10 transition-all duration-300 group min-h-fit">
+                <div className="card-border p-8 md:p-10 rounded-2xl hover:scale-[1.02] transition-all duration-300 group">
                   {exp.current && (
-                    <div className="inline-block px-3 py-1 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 border border-teal-500/50 rounded-full text-sm text-teal-400 mb-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full text-sm text-blue-400 mb-6">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
                       Current Position
                     </div>
                   )}
 
-                  <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4 gap-2">
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6 gap-3">
                     <div>
-                      <h3 className="text-2xl font-bold mb-1 group-hover:text-teal-400 transition-colors">
+                      <h3 className="text-2xl md:text-3xl font-bold mb-2 text-neutral-100 group-hover:text-blue-400 transition-colors">
                         {exp.role}
                       </h3>
-                      <div className="flex items-center gap-2 text-teal-400 font-semibold mb-2">
-                        <Briefcase className="w-4 h-4" />
+                      <div className="flex items-center gap-2 text-blue-400 font-semibold text-lg mb-2">
+                        <Briefcase className="w-5 h-5" />
                         <span>{exp.company}</span>
                         {exp.client && (
-                          <span className="text-slate-400 text-sm">({exp.client})</span>
+                          <span className="text-neutral-500 text-base">({exp.client})</span>
                         )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-4 text-sm text-slate-400 mb-4">
+                  <div className="flex flex-wrap gap-6 text-sm text-neutral-400 mb-6">
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
                       <span>{exp.period}</span>
@@ -134,13 +137,13 @@ export default function Experience() {
                     </div>
                   </div>
 
-                  <ul className="space-y-3">
+                  <ul className="space-y-4">
                     {exp.achievements.map((achievement, achIndex) => (
                       <li
                         key={achIndex}
-                        className="flex gap-3 text-slate-300 leading-relaxed"
+                        className="flex gap-4 text-neutral-300 leading-relaxed"
                       >
-                        <span className="text-teal-400 mt-1.5 flex-shrink-0">•</span>
+                        <span className="text-blue-400 mt-1.5 flex-shrink-0 text-lg">→</span>
                         <span className="flex-1 break-words">{achievement}</span>
                       </li>
                     ))}
@@ -151,11 +154,11 @@ export default function Experience() {
           </div>
         </div>
 
-        <div className="mt-12 text-center">
-          <div className="glass-effect inline-block px-6 py-4 rounded-2xl">
-            <div className="text-sm text-slate-400 mb-2">Education</div>
-            <div className="font-semibold">Bachelor of Technology (B.Tech)</div>
-            <div className="text-slate-400">Mahatma Gandhi University, India • 2010</div>
+        <div className="mt-16 text-center">
+          <div className="card-border inline-block px-8 py-6 rounded-2xl">
+            <div className="text-sm text-neutral-500 mb-2 uppercase tracking-wider">Education</div>
+            <div className="font-semibold text-xl text-neutral-100">Bachelor of Technology (B.Tech)</div>
+            <div className="text-neutral-400 mt-1">Mahatma Gandhi University, India • 2010</div>
           </div>
         </div>
       </div>
